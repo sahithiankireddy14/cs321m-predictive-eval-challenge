@@ -7,26 +7,26 @@ from pathlib import Path
 current_path = Path(__file__).parent
 
 with open(current_path / "means_exp10.json") as f:
-    _m = json.load(f)
+    m = json.load(f)
 
-_SUBJ_MEAN       = _m["subject"]
-_SUBJ_BENCH      = _m["subject_benchmark"]
-_SUBJ_BENCH_COND = _m["subject_bench_cond"]
+SUBJ_MEAN       = m["subject"]
+SUBJ_BENCH      = m["subject_benchmark"]
+SUBJ_BENCH_COND = m["subject_bench_cond"]
 
 
-def _parse_name(sc: str) -> str:
+def parse_name(sc: str) -> str:
     return sc.strip().splitlines()[0].replace("Name:", "").strip()
 
 
 def acquisition_function(input: dict) -> float:
-    name    = _parse_name(input["subject_content"])
+    name    = parse_name(input["subject_content"])
     key_sbc = f"{name}|||{input['benchmark']}|||{input['condition']}"
     key_sb  = f"{name}|||{input['benchmark']}"
 
-    if name not in _SUBJ_MEAN:
+    if name not in SUBJ_MEAN:
         return 5.0
-    n_sbc = _SUBJ_BENCH_COND.get(key_sbc) is None and 0 or 1
-    n_sb  = _SUBJ_BENCH.get(key_sb) is None and 0 or 1
+    n_sbc = SUBJ_BENCH_COND.get(key_sbc) is None and 0 or 1
+    n_sb  = SUBJ_BENCH.get(key_sb) is None and 0 or 1
     if n_sb == 0:
         return 4.0
     if n_sbc == 0:

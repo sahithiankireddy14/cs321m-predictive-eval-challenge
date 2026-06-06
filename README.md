@@ -45,36 +45,6 @@ This submission combines a condition-aware lookup table with k-nearest-neighbor 
 pip install sentence-transformers numpy
 ```
 
-### Test Prediction
-```python
-from model import predict
-
-# Example test input
-test_input = {
-    "benchmark": "MMLU",
-    "condition": "zero-shot",
-    "subject_content": "Name: GPT-4\nFamily: gpt\nParameters: 1T",
-    "item_content": "What is the capital of France?"
-}
-
-# Without adaptive labels
-prob = predict(test_input)
-print(f"Prediction: {prob:.4f}")
-
-# With adaptive labels
-labeled = [
-    {
-        "benchmark": "MMLU",
-        "condition": "zero-shot",
-        "subject_content": "Name: GPT-4\nFamily: gpt\nParameters: 1T",
-        "item_content": "Sample item 1",
-        "label": 1
-    }
-]
-prob = predict(test_input, labeled)
-print(f"Calibrated prediction: {prob:.4f}")
-```
-
 ### Acquisition Function
 ```python
 from labeling import acquisition_function
@@ -113,21 +83,12 @@ Both experiments read from the public HuggingFace dataset (`aims-foundations/mea
 
 ## Reproduction
 
-To reproduce the scores reported in the technical report:
+To reproduce the scores reported in the technical report/competition submission:
 1. Download the public training data from HuggingFace (`aims-foundations/measurement-db`)
 2. Run exp1_subject_mean.py to generate means_exp10.json
 3. Run exp17_item_knn.py to generate item_knn_data.npz and item_knn_meta.json
 4. ZIP model.py, labeling.py, models.txt, and the three data files
 5. Submit to Codabench
 
-## Performance
 
-| Approach | Negative Log-Loss | AUROC |
-|----------|------------------|-------|
-| Exp 17 (final) | **-0.59** | **0.71** |
-| Exp 10/11 (lookup only) | -0.61 | 0.69 |
-| Exp 6 (lookup + Platt) | -0.62 | — |
-| Exp 16 (neural item regression) | -0.63 | — |
-| Exp 14 (IRT) | -0.63 | — |
-| Exp 9 (LLM-as-judge) | -0.79 | — |
 
